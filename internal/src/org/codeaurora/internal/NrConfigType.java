@@ -30,37 +30,55 @@
 
 package org.codeaurora.internal;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.ComponentName;
-import android.os.IBinder;
-import android.os.ServiceManager;
-import android.util.Log;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class ServiceUtil {
-    private ServiceUtil() {}
+public class NrConfigType implements Parcelable{
+    private static final String TAG = "NrConfigType";
 
-    static public boolean bindService(Context context, ServiceConnection connection) {
-        IBinder extTelephony = ServiceManager.getService("extphone");
+    public static final int INVALID = -1;
+    public static final int NSA_CONFIGURATION = 0;
+    public static final int SA_CONFIGURATION   =  1;
 
-        boolean success = (extTelephony != null)? true: false;
+    private int mValue;
 
-        if (success) {
-            connection.onServiceConnected(
-                    new ComponentName("com.qualcomm.qti.internal.telephony",
-                            "com.qualcomm.qti.internal.telephony"
-                            + "com.qualcomm.qti.internal.telephony.ExtTelephonyServiceImpl"),
-                            extTelephony);
-        } else {
-            /* Service connection failed. Let the client connect to Stub service */
-        }
-
-        return success;
+    public NrConfigType(int val) {
+        mValue = val;
     }
 
-    static public boolean unbindService(ServiceConnection onnection) {
-        //We are not connecting to a bound service so return true;
-        return true;
+    public NrConfigType(Parcel in) {
+        mValue = in.readInt();
+    }
+
+    public int get() {
+        return mValue;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(mValue);
+    }
+
+    public static final Parcelable.Creator<NrConfigType> CREATOR = new Parcelable.Creator() {
+        public NrConfigType createFromParcel(Parcel in) {
+            return new NrConfigType(in);
+        }
+
+        public NrConfigType[] newArray(int size) {
+            return new NrConfigType[size];
+        }
+    };
+
+    public void readFromParcel(Parcel in) {
+        mValue = in.readInt();
+    }
+
+    @Override
+    public String toString() {
+        return TAG + ": " + get();
     }
 }

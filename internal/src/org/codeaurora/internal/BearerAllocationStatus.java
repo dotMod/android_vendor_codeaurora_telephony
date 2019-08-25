@@ -30,37 +30,64 @@
 
 package org.codeaurora.internal;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.ComponentName;
-import android.os.IBinder;
-import android.os.ServiceManager;
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
-public class ServiceUtil {
-    private ServiceUtil() {}
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
 
-    static public boolean bindService(Context context, ServiceConnection connection) {
-        IBinder extTelephony = ServiceManager.getService("extphone");
+public class BearerAllocationStatus implements Parcelable {
 
-        boolean success = (extTelephony != null)? true: false;
+    private static final String TAG = "BearerAllocationStatus";
 
-        if (success) {
-            connection.onServiceConnected(
-                    new ComponentName("com.qualcomm.qti.internal.telephony",
-                            "com.qualcomm.qti.internal.telephony"
-                            + "com.qualcomm.qti.internal.telephony.ExtTelephonyServiceImpl"),
-                            extTelephony);
-        } else {
-            /* Service connection failed. Let the client connect to Stub service */
+    public static final int INVALID = -1;
+    public static final int NOT_ALLOCATED = 0;
+    public static final int ALLOCATED   =  1;
+    public static final int MMW_ALLOCATED = 2;
+
+    private int mValue;
+
+    public BearerAllocationStatus(int val) {
+        mValue = val;
+    }
+
+    public BearerAllocationStatus(Parcel in) {
+        mValue = in.readInt();
+    }
+
+    public int get() {
+        return mValue;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(mValue);
+    }
+
+    public static final Parcelable.Creator<BearerAllocationStatus> CREATOR = new Parcelable.Creator() {
+        public BearerAllocationStatus createFromParcel(Parcel in) {
+            return new BearerAllocationStatus(in);
         }
 
-        return success;
+        public BearerAllocationStatus[] newArray(int size) {
+            return new BearerAllocationStatus[size];
+        }
+    };
+
+    public void readFromParcel(Parcel in) {
+        mValue = in.readInt();
     }
 
-    static public boolean unbindService(ServiceConnection onnection) {
-        //We are not connecting to a bound service so return true;
-        return true;
+    @Override
+    public String toString() {
+        return TAG + ": " + get();
     }
+
 }

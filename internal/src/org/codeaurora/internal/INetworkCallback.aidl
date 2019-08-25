@@ -34,11 +34,40 @@ import org.codeaurora.internal.SignalStrength;
 import org.codeaurora.internal.DcParam;
 import org.codeaurora.internal.Status;
 import org.codeaurora.internal.Token;
+import org.codeaurora.internal.BearerAllocationStatus;
+import org.codeaurora.internal.UpperLayerIndInfo;
+import org.codeaurora.internal.NrConfigType;
+import org.codeaurora.internal.NrIconType;
+
 
 interface INetworkCallback {
     void on5gStatus(int slotId, in Token token, in Status status, boolean enableStatus);
     void onNrDcParam(int slotId, in Token token, in Status status, in DcParam dcParam);
-    void onNrBearerAllocation(int slotId, in Token token, in Status status, boolean allocated);
+    void onAnyNrBearerAllocation(int slotId, in Token token, in Status status,
+            in BearerAllocationStatus bearerStatus);
+    void onUpperLayerIndInfo(int slotId, in Token token, in Status status,
+            in UpperLayerIndInfo upperLayerInfo);
     void onSignalStrength(int slotId, in Token token, in Status status,
             in SignalStrength signalStrength);
+    void on5gConfigInfo(int slotId, in Token token, in Status status,
+            in NrConfigType nrConfigType);
+    void onNrIconType(int slotId, in Token token, in Status status,
+            in NrIconType nrIconType);
+
+    /**
+    * Response to enableEndc
+    * @param - slotId
+    * @param - token is the same token which is recived in enableEndc
+    * @param - status SUCCESS/FAILURE based on the modem Result code
+    */
+    void onEnableEndc(int slotId, in Token token, in Status status);
+
+    /**
+    * Response to queryEndcStatus
+    * @param - slotId
+    * @param - token is the same token which is recived in queryEndcStatus
+    * @param - status SUCCESS/FAILURE based on the modem Result code
+    * @param - enableStatus true if endce is enabled otherwise false
+    */
+    void onEndcStatus(int slotId, in Token token, in Status status, boolean enableStatus);
 }

@@ -297,6 +297,36 @@ interface IExtTelephony {
     Token queryNrSignalStrength(int slotId, in Client client);
 
     // Async api
+    Token queryUpperLayerIndInfo(int slotId, in Client client);
+
+    // Async api
+    Token query5gConfigInfo(int slotId, in Client client);
+
+    // Async api
+    Token queryNrIconType(int slotId, in Client client);
+
+    /**
+    * Enable/disable endc on a given slotId.
+    * @param - slotId
+    * @param - enabled
+    *        true - to enable endc
+    *        false - to disable endc
+    *  @param - client registered with packagename to receive
+    *         callbacks.
+    * @return Integer Token to be used to compare with the response.
+    */
+    Token enableEndc(int slotId, boolean enable, in Client client);
+
+    /**
+    * To query endc status on a given slotId.
+    * @param - slotId
+    * @param - client registered with packagename to receive
+    *         callbacks.
+    * @return Integer Token to be used to compare with the response.
+    */
+    Token queryEndcStatus(int slotId, in Client client);
+
+    // Async api
     Client registerCallback(String packageName, INetworkCallback callback);
 
     // Async api

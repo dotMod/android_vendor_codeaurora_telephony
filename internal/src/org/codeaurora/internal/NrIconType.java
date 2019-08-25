@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2019, The Linux Foundation. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -30,37 +30,56 @@
 
 package org.codeaurora.internal;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.ComponentName;
-import android.os.IBinder;
-import android.os.ServiceManager;
-import android.util.Log;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class ServiceUtil {
-    private ServiceUtil() {}
+public class NrIconType implements Parcelable{
+    private static final String TAG = "NrIconType";
 
-    static public boolean bindService(Context context, ServiceConnection connection) {
-        IBinder extTelephony = ServiceManager.getService("extphone");
+    public static final int INVALID = -1;
+    public static final int TYPE_NONE = 0;
+    public static final int TYPE_5G_BASIC = 1;
+    public static final int TYPE_5G_UWB = 2;
 
-        boolean success = (extTelephony != null)? true: false;
+    private int mValue;
 
-        if (success) {
-            connection.onServiceConnected(
-                    new ComponentName("com.qualcomm.qti.internal.telephony",
-                            "com.qualcomm.qti.internal.telephony"
-                            + "com.qualcomm.qti.internal.telephony.ExtTelephonyServiceImpl"),
-                            extTelephony);
-        } else {
-            /* Service connection failed. Let the client connect to Stub service */
-        }
-
-        return success;
+    public NrIconType(int val) {
+        mValue = val;
     }
 
-    static public boolean unbindService(ServiceConnection onnection) {
-        //We are not connecting to a bound service so return true;
-        return true;
+    public NrIconType(Parcel in) {
+        mValue = in.readInt();
+    }
+
+    public int get() {
+        return mValue;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(mValue);
+    }
+
+    public static final Parcelable.Creator<NrIconType> CREATOR = new Parcelable.Creator() {
+        public NrIconType createFromParcel(Parcel in) {
+            return new NrIconType(in);
+        }
+
+        public NrIconType[] newArray(int size) {
+            return new NrIconType[size];
+        }
+    };
+
+    public void readFromParcel(Parcel in) {
+        mValue = in.readInt();
+    }
+
+    @Override
+    public String toString() {
+        return TAG + ": " + get();
     }
 }
