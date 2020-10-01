@@ -638,8 +638,8 @@ public class QtiImsExtUtils {
                 QtiCallConstants.IMS_AUTO_REJECT_MODE + phoneId, arMode);
     }
 
-    // Supported for multi sim only. Default value is disabled
-    public static int getAutoReject(ContentResolver contentResolver, int phoneId) {
+    // Supported for multi sim only.
+    public static int getAutoRejectMode(ContentResolver contentResolver, int phoneId) {
         return android.provider.Settings.Global.getInt(contentResolver,
                 QtiCallConstants.IMS_AUTO_REJECT + phoneId,
                 QtiCallConstants.AUTO_REJECT_CALL_DISABLED);
